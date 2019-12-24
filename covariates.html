@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Covariates in the detection function</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Distance vignettes</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="line-transects.html">
+    <span class="fa fa-dove"></span>
+     
+    Line transects
+  </a>
+</li>
+<li>
+  <a href="variance.html">
+    <span class="fa fa-rocket"></span>
+     
+    Variance
+  </a>
+</li>
+<li>
+  <a href="point-transects.html">
+    <span class="fa fa-crow"></span>
+     
+    Point transects
+  </a>
+</li>
+<li>
+  <a href="covariates.html">
+    <span class="fa fa-kiwi-bird"></span>
+     
+    Covariates
+  </a>
+</li>
+<li>
+  <a href="strata.html">
+    <span class="fa fa-crow"></span>
+     
+    Stratification
+  </a>
+</li>
+<li>
+  <a href="cuecounts.html">
+    <span class="fa fa-headphones"></span>
+     
+    Cue counts
+  </a>
+</li>
+<li>
+  <a href="multipliers.html">
+    <span class="fa fa-poo"></span>
+     
+    Dung surveys
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Covariates in the detection function</h1>
+
+</div>
+
+
+<p>Covariates in point transect detection functions: Amakihi</p>
+<p>In this problem, we illustrate fitting multiple covariate distance sampling (MCDS) models to point transect data using a bird survey from Hawaii: data on an abundant species, the Hawaii amakihi <em>(Hemignathus virens)</em> is used. This practical is makes use of the <code>Distance</code> R package described by Miller et al. (2019) duplicating the analysis in Marques et al. (2007). This set of data is included in <code>Distance</code> as one of the Sample Projects and so can be accessed easily:</p>
+<pre class="r"><code>library(Distance)
+data(amakihi)
+head(amakihi, n=3)</code></pre>
+<p>These data include:</p>
+<ul>
+<li><code>Region.Label</code> - survey dates (month and year, e.g. 792 is July 1992) which are used as ‘strata’</li>
+<li><code>Area</code> - study area size (not used, set to 0) will only produce density estimates, not abundance</li>
+<li><code>Sample.Label</code> - point transect identifier (41 transects)</li>
+<li><code>Effort</code> - survey effort (1 for all points because each point was visited once)</li>
+<li><code>distance</code> - radial distance of detection from observer (meters)</li>
+<li><code>month</code> -</li>
+<li><code>OBs</code> - initials of the observer</li>
+<li><code>Sp</code> - species code (COAM)</li>
+<li><code>MAS</code> - minutes after sunrise</li>
+<li><code>HAS</code> - hour after sunrise</li>
+<li><code>Study.Area</code> - name of the study area (Kana)</li>
+</ul>
+<p>Note that the <code>Area</code> column is always zero, hence, detection functions can be fitted to the data, but bird abundance cannot be estimated. The covariates to be considered for possible inclusion into the detection function are <code>OBs</code>, <code>MAS</code> and <code>HAS</code>.</p>
+<div id="exploratory-data-analysis" class="section level1">
+<h1><span class="header-section-number">1</span> Exploratory data analysis</h1>
+<p>It is important to gain an understanding of the data prior to fitting detection functions. With this in mind, preliminary analysis of distance sampling data involves:</p>
+<ul>
+<li>assessing the shape of the collected data,</li>
+<li>considering the level of truncation of distances, and</li>
+<li>exploring patterns in potential covariates.</li>
+</ul>
+<p>We begin by assessing the distribution of distances to decide on a truncation distance.</p>
+<pre class="r"><code>hist(amakihi$distance)</code></pre>
+<p>To see if there are differences in the distribution of distances recorded by the different observers and in each hour after sunrise, boxplots can be used. Note how the <code>~</code> symbol is used to define the discrete groupings (i.e. observer and hour).</p>
+<pre class="r"><code>boxplot(amakihi$distance~amakihi$OBs, xlab=&quot;Observer&quot;, ylab=&quot;Distance (m)&quot;)
+boxplot(amakihi$distance~amakihi$HAS, xlab=&quot;Hour&quot;, ylab=&quot;Distance (m)&quot;)</code></pre>
+<p>The components of the boxplot are:</p>
+<ul>
+<li>the thick black line indicates the median</li>
+<li>the lower limit of the box is the first quartile (25th percentile) and the upper limit is the third quartile (75th percentile)</li>
+<li>the height of the box is the interquartile range (75th - 25th quartiles)</li>
+<li>the whiskers extend to the most extreme points which are no more than 1.5 times the interquartile range.</li>
+<li>dots indicate ‘outliers’ if there are any, i.e. points beyond the range of the whiskers.</li>
+</ul>
+<p>For minutes after sunrise (a continuous variable), we create a scatterplot of MAS (on the <span class="math inline">\(x\)</span>-axis) against distances (on the <span class="math inline">\(y\)</span>-axis). The plotting symbol (or character) is selected with the argument <code>pch</code>:</p>
+<pre class="r"><code>plot(x=amakihi$MAS, y=amakihi$distance, xlab=&quot;Minutes after sunrise&quot;,
+     ylab=&quot;Distance (m)&quot;, pch=20)</code></pre>
+<p>Clearly room for right truncation from this figure of the radial distance distribution. Subsequent detection function fitting will use the <code>truncation</code> argument in <code>ds()</code> to exclude the largest 10% of the detection distances.</p>
+<p>You may also want to think about potential collinearity (linear relationship) between the covariates - if collinear variables are included in the detection function, they will be explaining some of the same variation in the distances and this will reduce their importance as a potential covariate. How might you investigate the relationship between <code>HAS</code> and <code>MAS</code>?</p>
+<p>From these plots can you tell if any of the covariates will be useful in explaining the distribution of distances?</p>
+</div>
+<div id="adjusting-the-raw-covariates" class="section level1">
+<h1><span class="header-section-number">2</span> Adjusting the raw covariates</h1>
+<p>We would like to treat <code>OBs</code> and <code>HAS</code> as factor variables as in the original analysis; <code>OBs</code> is, by default, treated as a factor variable because it consists of characters rather than numbers. <code>HAS</code>, on the other hand, consists of numbers and so by default would be treated as a continuous variable (i.e. non-factor). That is fine if we want the effect of <code>HAS</code> to be monotonic (i.e. detectability either increases or decreases as a function of <code>HAS</code>). If we want <code>HAS</code> to have a non-linear effect on detectability, then we need to indicate to <code>R</code> to treat it as a factor as shown below.</p>
+<pre class="r"><code>amakihi$HAS &lt;- factor(amakihi$HAS)</code></pre>
+<p>One other, more subtle adjustment, is a transformation of the continuous covariate <code>MAS</code>. We are considering three possible covariates in our detection function: <code>OBs</code>, <code>HAS</code> and <code>MAS</code>. The first two variables, <code>OBs</code> and <code>HAS</code>, are both factor variables, and so, essentially, we can think of them as taking on values between 1 and 3 in the case of <code>OBS</code>, and 1 to 6 in the case of <code>HAS</code>. However, <code>MAS</code> can take on values from -18 (detections before sunrise) to &gt;300 and the disparity in scales of measure between <code>MAS</code> and the other candidate covariates can lead to difficulties in the performance of the optimizer fitting the detection functions in R. The solution to the difficulty is to scale <code>MAS</code> such that it is on a scale (approx. 1 to 5) comparable with the other covariates.</p>
+<p>Scaling the continuous covariate <code>MAS</code> makes optimisation to estiamte parameters of the detection function simpler.</p>
+<pre class="r"><code>amakihi$MAS &lt;- scale(amakihi$MAS)</code></pre>
+<p>Check what this command has done by looking at a summary of the adjusted MAS:</p>
+<pre class="r"><code>summary(amakihi$MAS)</code></pre>
+</div>
+<div id="candidate-models" class="section level1">
+<h1><span class="header-section-number">3</span> Candidate models</h1>
+<p>With three potential covariates, there are 8 possible models for the detection function:</p>
+<ul>
+<li>No covariates</li>
+<li>OBs</li>
+<li>HAS</li>
+<li>MAS</li>
+<li>OBs + HAS</li>
+<li>OBs + MAS</li>
+<li>HAS + MAS</li>
+<li>OBs + HAS + MAS</li>
+</ul>
+<p>Even without considering covariates there are also several possible key function/adjustment term combinations available: if all key function/covariate combinations are considered the number of potential models is large. Note that covariates are not allowed if a uniform key function is chosen and if covariate terms are included, adjustment terms are not allowed. Even with these restrictions, it is not best practice to take a scatter gun approach to detection function model fitting. Buckland et al. (2015) considered 13 combinations of key function/covariates. Here, we look at a subset of these.</p>
+<p>Fit a hazard rate model with no covariates or adjustment terms and make a note of the AIC. Note, that 10% of the largest distances are truncated - you may have decided on a different truncation distance.</p>
+<pre class="r"><code>conversion.factor &lt;- convert_units(&quot;meter&quot;, NULL, &quot;hectare&quot;)
+amak.hr &lt;- ds(amakihi, transect=&quot;point&quot;, key=&quot;hr&quot;, truncation=&quot;10%&quot;,
+              adjustment=NULL, convert.units = conversion.factor)</code></pre>
+<p>Make a note of the AIC for this model.</p>
+<p>Now fit a hazard rate model with <code>OBs</code> as a covariate in the detection function and make a note of the AIC. Has the AIC reduced by including a covariate?</p>
+<pre class="r"><code>amak.hr.obs &lt;- ds(amakihi, transect=&quot;point&quot;, key=&quot;hr&quot;, formula=~OBs,
+                  truncation=&quot;10%&quot;, convert.units = conversion.factor)</code></pre>
+<p>Fit a hazard rate model with <code>OBs</code> and <code>HAS</code> in the detection function:</p>
+<pre class="r"><code>amak.hr.obs.has &lt;- ds(amakihi, transect=&quot;point&quot;, key=&quot;hr&quot;, formula=~OBs+HAS,
+                      truncation=&quot;10%&quot;, convert.units = conversion.factor)</code></pre>
+<p>Try fitting other possible formula and decide which model is best in terms of AIC. To quickly compare AIC values from different models, use the <code>AIC</code> command as follows (note only models with the same truncation distance can be compared):</p>
+<pre class="r"><code>AIC(amak.hr, amak.hr.obs, amak.hr.obs.has)</code></pre>
+<p>Another useful function is <code>summarize_ds_models</code> - this has the advantage of ordering the models by AIC (smallest to largest).</p>
+<pre class="r"><code>summarize_ds_models(amak.hr, amak.hr.obs, amak.hr.obs.has, output = &quot;plain&quot;)</code></pre>
+<p>Examine the shape of the preferred detection function (including covariates observer and hours after sunrise) by plotting</p>
+<pre class="r"><code>plot(amak.hr.obs.has, pdf=TRUE)</code></pre>
+</div>
+<div id="references" class="section level1">
+<h1><span class="header-section-number">4</span> References</h1>
+<p>Marques, T.A., L. Thomas, S.G. Fancy and S.T. Buckland. (2007) Improving estimates of bird density using multiple-covariate distance sampling. The Auk 124 (4): 1229–1243. <a href="https://doi.org/10.1642/0004-8038(2007)124%5B1229:IEOBDU%5D2.0.CO;2" class="uri">https://doi.org/10.1642/0004-8038(2007)124[1229:IEOBDU]2.0.CO;2</a>.</p>
+<p>Miller DL, Rexstad E, Thomas L, Marshall L, Laake JL (2019) Distance Sampling in R. Journal of Statistical Software 89(1), 1-28. <a href="doi:10.18637/jss.v089.i01" class="uri">doi:10.18637/jss.v089.i01</a> <a href="http://doi.org/10.18637/jss.v089.i01" class="uri">http://doi.org/10.18637/jss.v089.i01</a>.</p>
+<p>
+<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+Press for solution and discussion
+</button>
+</p>
+<div id="collapseExample" class="collapse">
+<h5 class="card-title">
+Covariates in the detection function
+</h5>
+<div class="card card-block card text-white bg-primary mb-3" style="max-width: 75rem;">
+<pre class="r"><code>library(Distance)
+data(amakihi)
+hist(amakihi$distance)</code></pre>
+<p><img src="covariates_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre class="r"><code>boxplot(amakihi$distance~amakihi$OBs, xlab=&quot;Observer&quot;, ylab=&quot;Distance (m)&quot;)</code></pre>
+<p><img src="covariates_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<pre class="r"><code>boxplot(amakihi$distance~amakihi$HAS, xlab=&quot;Hour&quot;, ylab=&quot;Distance (m)&quot;)</code></pre>
+<p><img src="covariates_files/figure-html/unnamed-chunk-15-3.png" width="672" /></p>
+<pre class="r"><code>plot(x=amakihi$MAS, y=amakihi$distance, xlab=&quot;Minutes after sunrise&quot;,
+     ylab=&quot;Distance (m)&quot;, pch=20)</code></pre>
+<p><img src="covariates_files/figure-html/unnamed-chunk-15-4.png" width="672" /></p>
+<pre class="r"><code>amakihi$HAS &lt;- factor(amakihi$HAS)
+amakihi$MAS &lt;- scale(amakihi$MAS)
+summary(amakihi$MAS)</code></pre>
+<pre><code>##        V1          
+##  Min.   :-2.08724  
+##  1st Qu.:-0.82597  
+##  Median :-0.05081  
+##  Mean   : 0.00000  
+##  3rd Qu.: 0.76376  
+##  Max.   : 2.18270  
+##  NA&#39;s   :2</code></pre>
+<pre class="r"><code>conversion.factor &lt;- convert_units(&quot;meter&quot;, NULL, &quot;hectare&quot;)
+amak.hr &lt;- ds(amakihi, transect=&quot;point&quot;, key=&quot;hr&quot;, truncation=&quot;10%&quot;,
+              adjustment=NULL, convert.units = conversion.factor)
+amak.hr.obs &lt;- ds(amakihi, transect=&quot;point&quot;, key=&quot;hr&quot;, formula=~OBs,
+                  truncation=&quot;10%&quot;, convert.units = conversion.factor)
+amak.hr.obs.has &lt;- ds(amakihi, transect=&quot;point&quot;, key=&quot;hr&quot;, formula=~OBs+HAS,
+                      truncation=&quot;10%&quot;, convert.units = conversion.factor)
+AIC(amak.hr, amak.hr.obs, amak.hr.obs.has)</code></pre>
+<pre><code>##                 df      AIC
+## amak.hr          2 12000.67
+## amak.hr.obs      4 11969.82
+## amak.hr.obs.has  9 11972.67</code></pre>
+<pre class="r"><code>summarize_ds_models(amak.hr, amak.hr.obs, amak.hr.obs.has, output = &quot;plain&quot;)</code></pre>
+<pre><code>##             Model Key function    Formula C-vM $p$-value Average detectability
+## 2     amak.hr.obs  Hazard-rate       ~OBs      0.1256826             0.2743790
+## 3 amak.hr.obs.has  Hazard-rate ~OBs + HAS      0.2337446             0.2802722
+## 1         amak.hr  Hazard-rate         ~1      0.1600790             0.2852838
+##   se(Average detectability) Delta AIC
+## 2                0.02080831   0.00000
+## 3                0.02031863   2.84850
+## 1                0.02007204  30.84868</code></pre>
+<pre class="r"><code>plot(amak.hr.obs.has, pdf=TRUE)</code></pre>
+<p><img src="covariates_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<h1 id="notes-regarding-amakihi-detection-function-modelling"><span class="header-section-number">4</span> Notes regarding amakihi detection function modelling</h1>
+There were three observers involved in the survey. One observer made ~80% of the detections, with a second observer responsible for a further 15% and the third observer 5%. There are six unique values of <code>HAS</code>. The detection function of the observer with the majority of the detections can be seen clearly as the rows of detections beyond 40m above the solid line. If you look closely, you can see six circles representing each of the hours after sunrise. This observer’s PDF is above the PDF of the other two observers. Their PDF peaks at ~20m and rapidly diminishes thereafter, whereas the PDF of the observer with the most detections peaks at ~35m and declines more slowly thereafter.
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

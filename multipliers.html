@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Multipliers and indirect surveys</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Distance vignettes</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="line-transects.html">
+    <span class="fa fa-dove"></span>
+     
+    Line transects
+  </a>
+</li>
+<li>
+  <a href="variance.html">
+    <span class="fa fa-rocket"></span>
+     
+    Variance
+  </a>
+</li>
+<li>
+  <a href="point-transects.html">
+    <span class="fa fa-crow"></span>
+     
+    Point transects
+  </a>
+</li>
+<li>
+  <a href="covariates.html">
+    <span class="fa fa-kiwi-bird"></span>
+     
+    Covariates
+  </a>
+</li>
+<li>
+  <a href="strata.html">
+    <span class="fa fa-crow"></span>
+     
+    Stratification
+  </a>
+</li>
+<li>
+  <a href="cuecounts.html">
+    <span class="fa fa-headphones"></span>
+     
+    Cue counts
+  </a>
+</li>
+<li>
+  <a href="multipliers.html">
+    <span class="fa fa-poo"></span>
+     
+    Dung surveys
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Multipliers and indirect surveys</h1>
+
+</div>
+
+
+<p>We consider indirect methods to estimate abundance and hence include multipliers in the abundance calculations. The first problem uses data from a dung survey of deer and there are two levels of multipliers that need to be accounted for (dung production rate and dung decay rate).</p>
+<div id="objectives" class="section level1">
+<h1><span class="header-section-number">1</span> Objectives</h1>
+<p>The objectives of this exercise are to</p>
+<ol style="list-style-type: decimal">
+<li>Fit detection functions to cues</li>
+<li>Obtain relevant multipliers</li>
+<li>Use the multipliers in the <code>dht2</code> function to obtain animal abundances.</li>
+</ol>
+</div>
+<div id="dung-survey-of-deer" class="section level1">
+<h1><span class="header-section-number">2</span> Dung survey of deer</h1>
+<p>The question is how to estimate of the density of sika deer in a number of woodlands in the Scottish Borders (Marques et al. 2001). These animals are shy and will be aware of the presence of an observer before the observer detects them, making surveys of this species challenging. As a consequence, indirect estimation methods have been applied to this problem. In this manner, an estimate of density is produced for some sign generated by deer (in this case, faecal or dung pellets) and this estimate is transformed to density of deer (<span class="math inline">\(D_{\textrm{deer}}\)</span>) by</p>
+<p><span class="math display">\[ \hat D_{\textrm{deer}} = \frac{\textrm{dung deposited daily}}{\textrm{dung production rate (per animal)}} \]</span> where the dung deposited daily is given by</p>
+<p><span class="math display">\[ \textrm{dung deposited daily} = \frac{\hat D_{\textrm{pellet groups}}}{\textrm{mean time to decay}} \]</span> Hence, we use distance sampling to produce a pellet group density estimate, then adjust it accordingly to account for the production and decay processes operating during the time the data were being acquired. We will also take uncertainty in the dung production and decay rates into account in our final estimate of deer density.</p>
+<p>Data from 9 woodlands (labelled A-H and J) were collected according to the survey design (Figure 1) but note that data from block D were not included in this exercise.</p>
+<div class="figure">
+<img src="images/Prac_9_Figure_1.png" alt="Location of sika deer survey in southern Scotland and the survey design (from Marques et al. (2001). Note the differing amounts of effort in different woodlands based on information derived from pilot surveys." width="50%" />
+<p class="caption">
+Location of sika deer survey in southern Scotland and the survey design (from Marques et al. (2001). Note the differing amounts of effort in different woodlands based on information derived from pilot surveys.
+</p>
+</div>
+<p>In addition to these data, we also require estimates of the production rate. From a literature search, we learn that sika deer produce 25 pellet groups daily but this source did not provide a measure of variability of this estimate. During the course of our surveys we also followed the fate of some marked pellet groups to estimate the decay (disappearance) rates of a pellet group. A thorough discussion of methods useful for estimating decay rates and associated measures of precision can be found in Laing et al. (2003).</p>
+<p>There are many factors that might influence both production and decay rates, and for purposes of this exercise we will make the simplifying assumption that decay rate is homogeneous across these woodlands; with their mean time to decay of 163 days and a standard error of 13 days. (If you were to conduct a survey such as this, you would want to investigate this assumption more thoroughly.)</p>
+<div id="getting-started" class="section level2">
+<h2><span class="header-section-number">2.1</span> Getting started</h2>
+<p>These data (called <code>sikadeer</code>) are available in the <code>Distance</code> package. Detection of deer dung takes place at small spatial scales; perpendicular distances are measured in centimeters. But transects were long; measured in kilometers and deer densities are customarily reported in numbers kilometer<sup>-2</sup>.</p>
+<pre class="r"><code>library(Distance)
+data(sikadeer)
+conversion.factor &lt;- convert_units(&quot;centimeter&quot;, &quot;kilometer&quot;, &quot;square kilometer&quot;)</code></pre>
+</div>
+<div id="fit-detection-function-to-dung-pellets" class="section level2">
+<h2><span class="header-section-number">2.2</span> Fit detection function to dung pellets</h2>
+<p>Fit the usual series of models (i.e. half normal, hazard rate, uniform) models to the distances to pellet groups and decide on a detection function. This detection function will be used to obtain <span class="math inline">\(\hat D_{\textrm{pellet groups}}\)</span>.</p>
+<p>Have a look at the <code>Summary statistics</code> for this model - what do you notice about the allocation of search effort in each woodland?</p>
+</div>
+<div id="multipliers" class="section level2">
+<h2><span class="header-section-number">2.3</span> Multipliers</h2>
+<p>The next step is to create an object which contains the multipliers we wish to use. We already have estimates of dung production rates but need similar information on dung decay (or persistence) rate. Analysis is based upon methods presented in Laing et al. (2003).</p>
+<p>Data to calculate dung persistence has been collected in the file <a href="dung_persistence.csv">dung_persistence.csv</a>.</p>
+<pre class="r"><code>MIKE.persistence &lt;- function(DATA) {
+  
+#  Purpose: calculate mean persistence time (mean time to decay) for dung/nest data 
+#  Input: data frame with at least two columns:
+#         DAYS - calendar day on which dung status was observed
+#         STATE - dung status: 1-intact, 0-decayed
+#  Output: point estimate, standard error and CV of mean persistence time
+#
+#  Attribution: code from Mike Meredith website: 
+#      http://www.mikemeredith.net/blog/2017/Sign_persistence.htm
+#   Citing: CITES elephant protocol
+#      https://cites.org/sites/default/files/common/prog/mike/survey/dung_standards.pdf
+  
+  ##   Fit logistic regression model to STATE on DAYS, extract coefficients
+  dung.glm &lt;- glm(STATE ~ DAYS, data=DATA, family=binomial(link = &quot;logit&quot;))
+  betas &lt;- coefficients(dung.glm)
+  ##   Calculate mean persistence time
+  mean.decay &lt;- -(1+exp(-betas[1])) * log(1+exp(betas[1])) / betas[2]
+  ## Calculate the variance of the estimate
+  vcovar &lt;- vcov(dung.glm)
+  var0 &lt;- vcovar[1,1]  # variance of beta0
+  var1 &lt;- vcovar[2,2]  # variance of beta1
+  covar &lt;- vcovar[2,1] # covariance
+  deriv0 &lt;- -(1-exp(-betas[1]) * log(1+exp(betas[1])))/betas[2]
+  deriv1 &lt;- -mean.decay/betas[2]
+  var.mean &lt;- var0*deriv0^2 + 2*covar*deriv0*deriv1 + var1*deriv1^2
+  ## Calculate the SE and CV and return
+  se.mean &lt;- sqrt(var.mean)
+  cv.mean &lt;- se.mean/mean.decay
+  out &lt;- c(mean.decay, se.mean, 100*cv.mean)
+  names(out) &lt;- c(&quot;Mean persistence time&quot;, &quot;SE&quot;, &quot;%CV&quot;)
+  plot(decay$DAYS, jitter(decay$STATE, amount=0.10), xlab=&quot;Days since initiation&quot;,
+       ylab=&quot;Dung persists (yes=1)&quot;,
+       main=&quot;Eight dung piles revisited over time&quot;)
+  curve(predict(dung.glm, data.frame(DAYS=x), type=&quot;resp&quot;), add=TRUE)
+  abline(v=mean.decay, lwd=2, lty=3)
+  return(out)
+}
+decay &lt;- read.csv(&quot;dung_persistence.csv&quot;)
+persistence.time &lt;- MIKE.persistence(decay)
+print(persistence.time)</code></pre>
+<p>Running the above command should have produced a plot of dung persistence versus days since produced and fitted a logistic regression (this is like a simple linear regression but restricts the response to taking values between 0 and 1). Note the points can in reality only take values between 0 and 1 but for the purposes of plotting have been ‘jittered’ to avoid over-plotting.</p>
+<p>An estimate of mean persistence time and measure of variability are also provided - make a note of these as they will be required below.</p>
+<p>As stated above, we want an object which contains information on the dung production rate (and standard error) and dung decay rate (and standard error). The following command creates a list containing two data frames:</p>
+<ul>
+<li><code>creation</code> contains estimates of the dung production rate and associated standard error</li>
+<li><code>decay</code> contains the dung decay rate and associated standard error where <code>XX</code> and <code>YY</code> are the estimates you obtained from the dung decay rate analysis.</li>
+</ul>
+<pre class="r"><code># Create list of multipliers
+mult &lt;- list(creation = data.frame(rate=25, SE=0),
+#             decay    = data.frame(rate=XX, SE=YY))
+mult</code></pre>
+<p>The final step is to use these multipliers to convert <span class="math inline">\(\hat D_{\textrm{pellet groups}}\)</span> to <span class="math inline">\(\hat D_{\textrm{deer}}\)</span> (as in the equations above) - for this we need to employ the <code>dht2</code> function. In the command below the <code>multipliers=</code> argument allows us to specify the rates and standard errors. There are a couple of other function arguments that need some explanation:</p>
+<ul>
+<li><code>strat_formula=~Region.Label</code> is specified to take into account the design (i.e. different woodlands or blocks).</li>
+<li><code>stratification="geographical"</code> is specified because we want to produce an overall estimate density that is the mean of the woodland specific densities weighted by area of each block.</li>
+<li><code>deer.df</code> is the detection function you have fitted.</li>
+</ul>
+<pre class="r"><code>deer.ests &lt;- dht2(deer.df, flatfile=sikadeer, strat_formula=~Region.Label,
+                 convert_units=conversion.factor, multipliers=mult, 
+                 stratification=&quot;geographical&quot;)
+deer.ests</code></pre>
+</div>
+</div>
+<div id="other-stratification-choices-with-dht2" class="section level1">
+<h1><span class="header-section-number">3</span> Other <code>stratification</code> choices with <code>dht2</code></h1>
+<p>This example of Sika deer on different hunting estates uses geographical stratification. There is also the option of using the option <code>replicate</code> for the <code>stratification</code> argument. This is useful when there are repeated surveys in a geographic area; the average abundance is computed and variance is variability between surveys. Alternatively <code>effort_sum</code> is used with replicate surveys, but few replicates reporting average variance. Finally, the specification of <code>stratification="object"</code> can be used when detections are made of different species, sexes or ages of animals. This option will produce species-specific abundance estimates as well as abundance estimate over all species, properly calculating variance of total abundance. More information is availabe in <a href="strat.pdf">this diagramatic comparison</a> as well as in the help file for <code>?dht2</code>.</p>
+<p>The function <code>dht2</code> also provides information on the components of variance. Make a note of the these (contribution of detection function, encounter rate, decay rate and what happened to production rate component?) in each strata.</p>
+</div>
+<div id="references" class="section level1">
+<h1><span class="header-section-number">4</span> References</h1>
+<p>Laing SE, ST Buckland, RW Burn, D Lambie and A Amphlett. (2003) Dung and nest surveys: estimating decay rate. Journal of Applied Ecology 40:1102-1111</p>
+<p>Marques, FFC, ST Buckland, D Goffin, CE Dixon, DL Borchers, BA Mayle and AJ Peace. (2001) Estimating deer abundance from line transect surveys of dung: sika deer in southern Scotland. Journal of Applied Ecology 38: 349–363. <a href="https://doi.org/10.1046/j.1365-2664.2001.00584.x" class="uri">https://doi.org/10.1046/j.1365-2664.2001.00584.x</a>.</p>
+<p>Meredith, M. (2017) How long do animal signs remain visible? <a href="http://www.mikemeredith.net/blog/2017/Sign_persistence.htm" class="uri">http://www.mikemeredith.net/blog/2017/Sign_persistence.htm</a> for a thorough description of decay rate estimation.</p>
+<p>
+<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+Press for solution and discussion
+</button>
+</p>
+<div id="collapseExample" class="collapse">
+<h5 class="card-title">
+Multipliers for creation and disappearance rates
+</h5>
+<div class="card card-block card text-white bg-primary mb-3" style="max-width: 75rem;">
+<pre class="r"><code>library(Distance)
+data(sikadeer)
+conversion.factor &lt;- convert_units(&quot;centimeter&quot;, &quot;kilometer&quot;, &quot;square kilometer&quot;)</code></pre>
+<pre class="r"><code>deer.df &lt;- ds(sikadeer, key=&quot;hn&quot;, truncation=&quot;10%&quot;)
+plot(deer.df)</code></pre>
+<p><img src="multipliers_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>deer.df$dht$individuals$summary</code></pre>
+<pre><code>##   Region Area CoveredArea Effort    n  k        ER      se.ER     cv.ER
+## 1      A 13.9       595.0   1.70 1217 13 715.88234 119.918872 0.1675120
+## 2      B 10.3       385.0   1.10  396 10 359.99999  86.859289 0.2412758
+## 3      C  8.6       157.5   0.45   17  3  37.77778   8.521202 0.2255612
+## 4      E  8.0       297.5   0.85   30  5  35.29412  16.568939 0.4694533
+## 5      F 14.0        70.0   0.20   29  1 145.00000   0.000000 0.0000000
+## 6      G 15.2       140.0   0.40   32  3  80.00000  39.686269 0.4960784
+## 7      H 11.3        70.0   0.20    3  1  15.00000   0.000000 0.0000000
+## 8      J  9.6        35.0   0.10    7  1  70.00000   0.000000 0.0000000
+## 9  Total 90.9      1750.0   5.00 1731 37 346.19999  68.158305 0.1968755</code></pre>
+<p><img src="multipliers_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre><code>## Mean persistence time                    SE                   %CV 
+##            163.396748             14.226998              8.707026</code></pre>
+<p>Using these results, the multipliers can be specified:</p>
+<pre class="r"><code># Create list of multipliers
+mult &lt;- list(creation = data.frame(rate=25, SE=0),
+             decay    = data.frame(rate=163, SE=14))
+mult</code></pre>
+<pre><code>## $creation
+##   rate SE
+## 1   25  0
+## 
+## $decay
+##   rate SE
+## 1  163 14</code></pre>
+<pre class="r"><code># Obtain animal estimates - overall estimate, weight by effort 
+deer_ests &lt;- dht2(deer.df, flatfile=sikadeer, strat_formula=~Region.Label,
+                  convert_units=conversion.factor, multipliers=mult, 
+                  stratification=&quot;geographical&quot;)</code></pre>
+<pre><code>## Warning in dht2(deer.df, flatfile = sikadeer, strat_formula = ~Region.Label, :
+## One or more strata have only one transect, cannot calculate empirical encounter
+## rate variance</code></pre>
+<pre class="r"><code>deer_ests</code></pre>
+<pre><code>## Summary statistics:
+##  Region.Label Area CoveredArea Effort    n  k      ER   se.ER cv.ER
+##             A 13.9    0.005950   1.70 1217 13 715.882 119.919 0.168
+##             B 10.3    0.003850   1.10  396 10 360.000  86.859 0.241
+##             C  8.6    0.001575   0.45   17  3  37.778   8.521 0.226
+##             E  8.0    0.002975   0.85   30  5  35.294  16.569 0.469
+##             F 14.0    0.000700   0.20   29  1 145.000   0.000 0.000
+##             G 15.2    0.001400   0.40   32  3  80.000  39.686 0.496
+##             H 11.3    0.000700   0.20    3  1  15.000   0.000 0.000
+##             J  9.6    0.000350   0.10    7  1  70.000   0.000 0.000
+##         Total 90.9    0.017500   5.00 1731 37 346.200 154.425 0.446
+## 
+## Abundance estimates:
+##  Region.Label Estimate      se    cv  LCI  UCI        df
+##             A     1027 197.474 0.192  691 1527    20.797
+##             B      383  99.171 0.259  220  667    11.955
+##             C       34   8.200 0.244   15   75     2.759
+##             E       29  13.959 0.479    9   99     4.329
+##             F      210  19.752 0.094  174  252 60314.218
+##             G      126  63.399 0.505   18  858     2.147
+##             H       18   1.649 0.094   15   21 60314.221
+##             J       69   6.539 0.094   58   83 60314.216
+##         Total     1895 272.342 0.144 1412 2543    25.610
+## 
+## Component percentages of variance:
+##  Region.Label Detection    ER Multipliers
+##             A      4.07 75.96       19.97
+##             B      2.24 86.76       10.99
+##             C      2.52 85.14       12.34
+##             E      0.66 96.13        3.22
+##             F     16.93  0.00       83.07
+##             G      0.59 96.52        2.89
+##             H     16.93  0.00       83.07
+##             J     16.93  0.00       83.07
+##         Total      0.72 95.73        3.55</code></pre>
+<h1 id="notes-regarding-dung-surveys"><span class="header-section-number">4</span> Notes regarding dung surveys</h1>
+<ul>
+<li>overall estimate of density
+<ul>
+<li>most effort took place in woodland A where deer density was high. Therefore, the overall estimate is between the estimated density in woodland A and the lower densities in the other woodlands.</li>
+</ul></li>
+<li>components of variance
+<ul>
+<li>we now have uncertainty associated with the encounter rate, detection function and decay rate (note there was no uncertainty associated with the production rate) and so the components of variation for all three components are provided.</li>
+</ul></li>
+</ul>
+<p>In woodland A, there were 13 transects on which over 1,200 pellet groups were detected: uncertainty in the estimated density (measured by CV) was 19% and the variance components were apportioned as detection probability 4%, encounter rate 76% and multipliers 20%.</p>
+<p>In woodland E, there were 5 transects and 30 pellet groups resulting in a coefficient of variation (CV) of 48%: the variance components were apportioned as detection probability 0.7%, encounter rate 96% and multipliers 3%.</p>
+<p>The CV of the abundance estimates for blocks F, H and J are identical (9%) because a pooled detection function was used across all blocks and the dung deposition and decay rates were not block-specific. The only element of the computation remaining that is block-specific is the encounter rate; and for these three blocks there was but a single transect per block, meaning the encounter rate variance could not be computed and was set to zero.</p>
+<p>The estimated abundance across all blocks had a CV of 14%. But far and away, the greatest contribution to this uncertainty was encounter rate variance–differences in pellet encounters between transects. In the context of distance sampling, the uncertainty in the parameter estimates of the detection function accounts for &lt;1% in the total estimate of deer abundance across the blocks.</p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

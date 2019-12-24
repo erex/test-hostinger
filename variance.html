@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Variance estimation</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Distance vignettes</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="line-transects.html">
+    <span class="fa fa-dove"></span>
+     
+    Line transects
+  </a>
+</li>
+<li>
+  <a href="variance.html">
+    <span class="fa fa-rocket"></span>
+     
+    Variance
+  </a>
+</li>
+<li>
+  <a href="point-transects.html">
+    <span class="fa fa-crow"></span>
+     
+    Point transects
+  </a>
+</li>
+<li>
+  <a href="covariates.html">
+    <span class="fa fa-kiwi-bird"></span>
+     
+    Covariates
+  </a>
+</li>
+<li>
+  <a href="strata.html">
+    <span class="fa fa-crow"></span>
+     
+    Stratification
+  </a>
+</li>
+<li>
+  <a href="cuecounts.html">
+    <span class="fa fa-headphones"></span>
+     
+    Cue counts
+  </a>
+</li>
+<li>
+  <a href="multipliers.html">
+    <span class="fa fa-poo"></span>
+     
+    Dung surveys
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Variance estimation</h1>
+
+</div>
+
+
+<p>Continuing with the Montrave winter wren line transect data from the line transect vignette, we focus upon producing robust estimates of precision in our point estimates of abundance and density.</p>
+<div id="objectives" class="section level1">
+<h1><span class="header-section-number">1</span> Objectives</h1>
+<ul>
+<li>Estimate precision in the standard manner</li>
+<li>Use the bootstrap to estimate precision</li>
+<li>Incorporate model uncertainty in our estimates of precisio</li>
+</ul>
+</div>
+<div id="survey-data" class="section level1">
+<h1><span class="header-section-number">2</span> Survey data</h1>
+<p>The R workspace <code>wren_lt</code> contains detections of winter wrens from the line transect surveys of Buckland (2006).</p>
+<pre class="r"><code>library(Distance)
+data(wren_lt)</code></pre>
+<p>The function <code>names()</code> allows you to see the names of the columns of the data frame <code>wren_lt</code>. Definitions of those fields were provided in the line transect vignette.</p>
+<p>The effort, or transect length has been adjusted to recognise each transect is walked twice.</p>
+<pre class="r"><code>conversion.factor &lt;- convert_units(&quot;meter&quot;, &quot;kilometer&quot;, &quot;hectare&quot;)</code></pre>
+</div>
+<div id="fitting-a-suitable-detection-function" class="section level1">
+<h1><span class="header-section-number">3</span> Fitting a suitable detection function</h1>
+<p>Rather than refitting models used in the line transect vignette, we move directly to the model selected by Buckland (2006).</p>
+<pre class="r"><code>wren.unif.cos &lt;- ds(wren_lt, key=&quot;unif&quot;, adjustment=&quot;cos&quot;,
+                  convert.units=conversion.factor)</code></pre>
+<p>Based upon experience in the field, the uniform cosine model was used for inference.</p>
+</div>
+<div id="estimation-of-precision" class="section level1">
+<h1><span class="header-section-number">4</span> Estimation of precision</h1>
+<p>Looking at the density estimates from the uniform cosine model</p>
+<pre class="r"><code>wren.unif.cos &lt;- ds(wren_lt, key=&quot;unif&quot;, adjustment=&quot;cos&quot;,
+                  convert.units=conversion.factor)
+wren.unif.cos$dht$individuals$D</code></pre>
+<pre><code>##   Label Estimate        se        cv       lcl     ucl       df
+## 1 Total 1.067167 0.2125562 0.1991781 0.7229706 1.57523 168.1381</code></pre>
+<p>The coefficient of variation (CV) is 0.20 (20%), and confidence interval bounds are (0.72 - 1.58) birds per hectare. The coefficient of variation is based upon a delta-method approximation of the uncertainty in both the parameters of the detection function and the variability in encounter rates between transects.</p>
+<p><span class="math display">\[[CV(\hat{D})]^2 = [CV(\frac{n}{L})]^2 + [CV(P_a)]^2\]</span> where</p>
+<ul>
+<li><span class="math inline">\(n\)</span> is number of detections</li>
+<li><span class="math inline">\(L\)</span> is total effort</li>
+<li><span class="math inline">\(P_a\)</span> is probability of detection given a bird is within the covered region.</li>
+</ul>
+<p>These confidence interval bounds assume the sampling distribution of <span class="math inline">\(\hat{D}\)</span> is log-normal (Buckland et al. 2015, Section 6.2.1).</p>
+<div id="bootstrap-estimates-of-precision" class="section level2">
+<h2><span class="header-section-number">4.1</span> Bootstrap estimates of precision</h2>
+<p>Rather than relying upon the delta-method approximation that assumes independence between uncertainty in the detection function and variability in encounter rate, a bootstrap procedure can be employed. Resampling with replacement of the transects produces replicate samples with which a sampling distribution of <span class="math inline">\(\hat{D}\)</span> is approximated. From that sampling distribution, the percentile method is used to produce confidence interval bounds respecting the shape of the sampling distribution (Buckland et al. 2015, Section 6.3.1.2).</p>
+<p>Before bootstrapping can take place, users must create a function that extracts estimates from each bootstrap replicate. In the function below, a data frame is created containing the density and abundance estimates of individuals for later processing.</p>
+<pre class="r"><code>DNhat_summarize_indiv &lt;- function(ests, fit) {
+  return(data.frame(D=ests$individuals$D$Estimate,
+                    N=ests$individuals$N$Estimate))
+}</code></pre>
+<p>After the summary function is defined, the bootstrap procedure can be performed. Arguments here are the name of the fitted object, the object containing the data, conversion factor and number of bootstrap replicates.</p>
+<pre class="r"><code>est.boot &lt;- bootdht(model=wren.unif.cos, flatfile=wren_lt,
+                    summary_fun=DNhat_summarize_indiv,
+                    convert.units=conversion.factor, nboot=99)</code></pre>
+<p>The object <code>est.boot</code> contains a data frame with two columns consisting of <span class="math inline">\(\hat{D}\)</span> and <span class="math inline">\(\hat{N}\)</span> as specified in the user-defined function <code>DNhat_summarize_indiv</code>. This data frame can be processed to produce a histogram representing the sampling distribution of the estimated parameters as well as the percentile confidence interval bounds.</p>
+<pre class="r"><code>alpha &lt;- 0.05
+quantile(est.boot$D, probs = c(alpha/2, 1-alpha/2))</code></pre>
+</div>
+</div>
+<div id="incorporating-model-uncertainty-in-precision-estimates" class="section level1">
+<h1><span class="header-section-number">5</span> Incorporating model uncertainty in precision estimates</h1>
+<p>The argument <code>model</code> in <code>bootdht</code> can be a single model as shown above, or it can consist of a list of models. In the later instance, all models in the list are fitted to each bootstrap replicate and model selection based on AIC is performed for each replicate. The consequence is that model uncertainty is incorporated into the resulting estimate of precision.</p>
+<pre class="r"><code>est.boot.uncert &lt;- bootdht(model=list(wren.hn, wren.hr.poly, wren.unif.cos), 
+                           flatfile=wren_lt,
+                           summary_fun=DNhat_summarize_indiv,
+                           convert.units=conversion.factor, nboot=99)
+quantile(est.boot.uncert$D, probs = c(alpha/2, 1-alpha/2))</code></pre>
+</div>
+<div id="references" class="section level1">
+<h1><span class="header-section-number">6</span> References</h1>
+<p>Buckland ST (2006) Point transect surveys for songbirds: robust methodologies. The Auk 123:345–345. <a href="https://doi.org/10.1093/auk/123.2.345" class="uri">https://doi.org/10.1093/auk/123.2.345</a></p>
+<p>Buckland, ST, EA Rexstad, TA Marques, and CS Oedekoven. (2015) Distance Sampling: Methods and Applications. Springer International Publishing, Cham.</p>
+<p>Miller DL (2017) Distance: Distance Sampling Detection Function and Abundance Estimation. R package version 0.9.7. <strong>should be 0.9.9 but not on CRAN</strong> <a href="https://CRAN.R-project.org/package=Distance" class="uri">https://CRAN.R-project.org/package=Distance</a></p>
+<p>Miller DL, Rexstad E, Thomas L, Marshall L, Laake JL (2019) Distance Sampling in R. Journal of Statistical Software 89(1), 1-28. <a href="doi:10.18637/jss.v089.i01" class="uri">doi:10.18637/jss.v089.i01</a> <a href="http://doi.org/10.18637/jss.v089.i01" class="uri">http://doi.org/10.18637/jss.v089.i01</a>.</p>
+<p>R Core Team (2018) R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a></p>
+<p>
+<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+Press for solution and discussion
+</button>
+</p>
+<div id="collapseExample" class="collapse">
+<h5 class="card-title">
+Montrave winter wren density
+</h5>
+<div class="card card-block card text-white bg-primary mb-3" style="max-width: 75rem;">
+<pre class="r"><code>library(Distance)
+data(wren_lt)
+conversion.factor &lt;- convert_units(&quot;meter&quot;, &quot;kilometer&quot;, &quot;hectare&quot;)
+wren.hn &lt;- ds(data=wren_lt, key=&quot;hn&quot;, adjustment=NULL,
+              convert.units=conversion.factor)
+wren.unif.cos &lt;- ds(wren_lt, key=&quot;unif&quot;, adjustment=&quot;cos&quot;,
+                  convert.units=conversion.factor)
+wren.hr.poly &lt;- ds(wren_lt, key=&quot;hr&quot;, adjustment=&quot;poly&quot;, 
+                  convert.units=conversion.factor)
+summarize_ds_models(wren.hn, wren.hr.poly, wren.unif.cos,
+                    output=&quot;plain&quot;)</code></pre>
+<pre><code>##           Model                                        Key function Formula
+## 2  wren.hr.poly                                         Hazard-rate      ~1
+## 3 wren.unif.cos Uniform with cosine adjustment terms of order 1,2,3    &lt;NA&gt;
+## 1       wren.hn                                         Half-normal      ~1
+##   C-vM $p$-value Average detectability se(Average detectability) Delta AIC
+## 2     0.18664491             0.8445188                0.02445298  0.000000
+## 3     0.19992012             0.7566329                0.13932632  4.299942
+## 1     0.07693371             0.6850370                0.05678866  6.055028</code></pre>
+<pre class="r"><code>wren.unif.cos$dht$individuals$D</code></pre>
+<pre><code>##   Label Estimate        se        cv       lcl     ucl       df
+## 1 Total 1.067167 0.2125562 0.1991781 0.7229706 1.57523 168.1381</code></pre>
+<pre class="r"><code>DNhat_summarize_indiv &lt;- function(ests, fit) {
+  return(data.frame(D=ests$individuals$D$Estimate,
+                    N=ests$individuals$N$Estimate))
+}</code></pre>
+<pre class="r"><code>est.boot &lt;- bootdht(model=wren.unif.cos, flatfile=wren_lt,
+                    summary_fun=DNhat_summarize_indiv,
+                    convert.units=conversion.factor, nboot=99)
+est.boot.uncert &lt;- bootdht(model=list(wren.hn, wren.hr.poly, wren.unif.cos), 
+                           flatfile=wren_lt,
+                           summary_fun=DNhat_summarize_indiv,
+                           convert.units=conversion.factor, nboot=99)</code></pre>
+<pre class="r"><code>hist(est.boot$D, main=&quot;Sampling distribution D-hat&quot;)
+alpha &lt;- 0.05
+cat(&quot;Confidence interval on density based upon the preferred model\n&quot;)</code></pre>
+<pre><code>## Confidence interval on density based upon the preferred model</code></pre>
+<pre class="r"><code>(CI.bounds &lt;- quantile(est.boot$D, probs = c(alpha/2, 1-alpha/2)))</code></pre>
+<pre><code>##      2.5%     97.5% 
+## 0.8556857 1.4019527</code></pre>
+<pre class="r"><code>abline(v=CI.bounds, lwd=2, lty=3)</code></pre>
+<p><img src="variance_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code>cat(&quot;Confidence interval on density incorporating model uncertainty\n&quot;)</code></pre>
+<pre><code>## Confidence interval on density incorporating model uncertainty</code></pre>
+<pre class="r"><code>quantile(est.boot.uncert$D, probs = c(alpha/2, 1-alpha/2))</code></pre>
+<pre><code>##     2.5%    97.5% 
+## 0.862855 1.378898</code></pre>
+<h1 id="notes-regarding-variance-estimation-in-the-montrave-winter-wren-data"><span class="header-section-number">6</span> Notes regarding variance estimation in the Montrave winter wren data</h1>
+<p>For this data set, the bootstrap estimate of precision is smaller than the delta-method approximation (confidence interval bounds are closer together). Furthermore, incoroprating model uncertainty into the estimate of precision for density changes the precision estimate very little.</p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

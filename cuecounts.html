@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Cue counts of bird song</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Distance vignettes</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="line-transects.html">
+    <span class="fa fa-dove"></span>
+     
+    Line transects
+  </a>
+</li>
+<li>
+  <a href="variance.html">
+    <span class="fa fa-rocket"></span>
+     
+    Variance
+  </a>
+</li>
+<li>
+  <a href="point-transects.html">
+    <span class="fa fa-crow"></span>
+     
+    Point transects
+  </a>
+</li>
+<li>
+  <a href="covariates.html">
+    <span class="fa fa-kiwi-bird"></span>
+     
+    Covariates
+  </a>
+</li>
+<li>
+  <a href="strata.html">
+    <span class="fa fa-crow"></span>
+     
+    Stratification
+  </a>
+</li>
+<li>
+  <a href="cuecounts.html">
+    <span class="fa fa-headphones"></span>
+     
+    Cue counts
+  </a>
+</li>
+<li>
+  <a href="multipliers.html">
+    <span class="fa fa-poo"></span>
+     
+    Dung surveys
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Cue counts of bird song</h1>
+
+</div>
+
+
+<p>In this exercise, we use <code>R</code> (R Core Team 2019) and the <code>Distance</code> package (Miller 2017, Miller <em>et al.</em> 2019) to fit different detection function models to point transect cue count survey data of winter wren <em>(Troglodytes troglodytes)</em> density and abundance. These data were part of a study described by Buckland (2006).</p>
+<div id="objectives" class="section level1">
+<h1><span class="header-section-number">1</span> Objectives</h1>
+<ul>
+<li>Estimate density of cues from point transect data</li>
+<li>Convert cue density to animal density using rate of song production</li>
+</ul>
+</div>
+<div id="survey-design" class="section level1">
+<h1><span class="header-section-number">2</span> Survey design</h1>
+<p>Each of the 32 point count stations were visited twice. During each visit, the observer recorded distances to all songs detected during a 5-minute sampling period (Figure 1).</p>
+<div class="figure">
+<img src="images/montrave.jpg" alt="Montrave study area; white circles are point count stations." />
+<p class="caption">Montrave study area; white circles are point count stations.</p>
+</div>
+<p>In addition, 43 male winter wrens were observed and their rate of song production was measured. The mean cue rate, along with its standard error (between individuals) was calculated and included in the data set to serve as a multiplier.</p>
+<p>The fields of the <code>wren_cuecount</code> data set are:</p>
+<ul>
+<li>Region.Label - identifier of regions: in this case there is only one region and set to ‘Montrave’</li>
+<li>Area - size of the study region (hectares): 33.2ha</li>
+<li>Sample.Label - point transect identifier (numbered 1-32)</li>
+<li>Cue.rate - production of cues (per minute)</li>
+<li>Cue.rate.SE - standard error of cue production rate (between individuals)</li>
+<li>object - unique identifier for each detected winter wren</li>
+<li>distance - radial distance (metres) to each detection</li>
+<li>Search.time - Duration of listening at each station (minutes)</li>
+<li>Study.Area - this is the name of the study, ‘Montrave 3’</li>
+</ul>
+</div>
+<div id="accessing-the-distance-package-and-cue-count-data" class="section level1">
+<h1><span class="header-section-number">3</span> Accessing the <code>Distance</code> package and cue count data</h1>
+<p>This command assumes that the <code>dsdata</code> package has been installed on your computer. The R workspace <code>wren_cuecount</code> contains detections of winter wrens from the line transect surveys of Buckland (2006).</p>
+<pre class="r"><code>library(Distance)
+data(wren_cuecount)</code></pre>
+<p>Examine the first few rows of <code>wren_cuecount</code> using the function <code>head()</code></p>
+<pre class="r"><code>head(wren_cuecount)</code></pre>
+<p>Note there is no field in the data to indicate sampling effort. With line transects, the lengths of each transect were provided to measure effort. For point transects, the number of visits to each station was specified. In this data set, all that is specified is <code>Search.time</code> the length of time each station was sampled. <em>Note</em>, each station was visited twice and sampling was 5 minutes in length on each visit. Hence <code>Search.time</code> is recorded as 10. <em>Note also</em> the units of measure of <code>Search.time</code> must be consistent with the units of measure of cue rate.</p>
+</div>
+<div id="examine-the-distribution-of-detection-distances" class="section level1">
+<h1><span class="header-section-number">4</span> Examine the distribution of detection distances</h1>
+<p>Gain familiarity with the perpendicular distance data using the <code>hist()</code> function</p>
+<pre class="r"><code>hist(wren_cuecount$distance, xlab=&quot;Distance (m)&quot;, main=&quot;Winter wren song detection distances&quot;)</code></pre>
+<p>Note the long right tail we will cut off with the <code>truncation</code> argument to <code>ds()</code>.</p>
+</div>
+<div id="fitting-a-simple-detection-function-model-with-ds" class="section level1">
+<h1><span class="header-section-number">5</span> Fitting a simple detection function model with <code>ds</code></h1>
+<p>As noted above, <strong>Effort</strong> is missing from the data. With cue count surveys, effort is measured in time rather than length or number of visits. Therefore we define a new field <code>Effort</code> and set it equal to the <code>Search.time</code> field.</p>
+<p><em>Note</em>: no <code>converstion.factor</code> is specified in the call to <code>ds()</code> because it is only the detection function that is of interest at this step of the analysis, nothing about density or abundance.</p>
+<pre class="r"><code>conversion.factor &lt;- convert_units(&quot;meter&quot;, NULL, &quot;hectare&quot;)
+wren_cuecount$Effort &lt;- wren_cuecount$Search.time
+wrensong.hr &lt;- ds(wren_cuecount, transect=&quot;point&quot;, key=&quot;hr&quot;, adjustment=NULL, 
+                  truncation=100)</code></pre>
+<p>Visually inspect the fitted detection function with the <code>plot()</code> function, specifying the cutpoints histogram with argument <code>breaks</code>:</p>
+<pre class="r"><code>cutpoints &lt;- c(0,5,10,15,20,30,40,50,65,80,100)
+plot(wrensong.hr, breaks=cutpoints, pdf=TRUE)</code></pre>
+<div id="caution" class="section level2">
+<h2><span class="header-section-number">5.1</span> Caution</h2>
+<p>Do not examine the abundance or density estimates produced by <code>summary(wrensong.hr)</code> because as the results it contains are <em>nonsense</em>. These summary values do not properly recognise that the unit of effort is time rather than visits for the point count survey. This additional component of the analysis is provided in the next step.</p>
+</div>
+</div>
+<div id="introducing-a-new-function-dht2" class="section level1">
+<h1><span class="header-section-number">6</span> Introducing a new function <code>dht2</code></h1>
+<p>The function <code>dht2</code> provides additional capacity for providing density or abundance estimates in novel situations such as cue counts where multipliers need to be incorporated.</p>
+<p>The argument <code>multipliers</code> in <code>dht2</code> provides the mechanism whereby the cue production rate and its uncertainty are incorporated into the analysis.</p>
+<p>To properly perform the calculations responsible for converting song density to bird density, we enlist the aide of the function <code>dht2</code>. The additional information about cue rates and their variability are provided in a <code>list</code>. The multiplier in the list is <strong>required</strong> to have the name <code>creation</code> and it contains both the cue rate point estimate and its associated measure of precision.</p>
+<pre class="r"><code>cuerate &lt;- unique(wren_cuecount[ , c(&quot;Cue.rate&quot;,&quot;Cue.rate.SE&quot;)])
+names(cuerate) &lt;- c(&quot;rate&quot;, &quot;SE&quot;)
+(mult &lt;- list(creation=cuerate))</code></pre>
+<p>Additional arguments are also passed to <code>dht2</code>. <code>flatfile</code> is the name of the data set and <code>strat_formula</code> contains information about stratification that might exist in the survey design. The Montrave study had no stratification, inference was only for the 33 hectare woodland, so <code>strat_formula</code> here is simply constant <code>~1</code>.</p>
+<p>Results of the overall winter wren density estimate is provided by a <code>print</code> method, specifying <code>report="density"</code>. The alternative for the <code>report</code> argument is <code>report="abundance"</code>.</p>
+<pre class="r"><code>wren.estimate &lt;- dht2(wrensong.hr, flatfile=wren_cuecount, strat_formula=~1,
+                 multipliers=mult, convert_units=conversion.factor)
+print(wren.estimate, report=&quot;density&quot;)</code></pre>
+<div id="absolute-goodness-of-fit" class="section level2">
+<h2><span class="header-section-number">6.1</span> Absolute goodness of fit</h2>
+<p>We assess the goodness of fit of the hazard rate model to the winter wren cue count data.</p>
+<pre class="r"><code>gof_ds(wrensong.hr)</code></pre>
+<p>Note the distinct lack of fit to the song data. This is because of many detections at the identical distances from birds being stationary and singing. This induces a phenomenon known as <em>over dispersion</em>.</p>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1><span class="header-section-number">7</span> References</h1>
+<p>Buckland ST (2006) Point transect surveys for songbirds: robust methodologies. The Auk 123:345–345. <a href="https://doi.org/10.1093/auk/123.2.345" class="uri">https://doi.org/10.1093/auk/123.2.345</a></p>
+<p>Miller DL (2017) Distance: Distance Sampling Detection Function and Abundance Estimation. R package version 0.9.7. <strong>should be 0.9.9 but not on CRAN</strong> <a href="https://CRAN.R-project.org/package=Distance" class="uri">https://CRAN.R-project.org/package=Distance</a></p>
+<p>Miller DL, Rexstad E, Thomas L, Marshall L, Laake JL (2019) Distance Sampling in R. Journal of Statistical Software 89(1), 1-28. <a href="doi:10.18637/jss.v089.i01" class="uri">doi:10.18637/jss.v089.i01</a> <a href="http://doi.org/10.18637/jss.v089.i01" class="uri">http://doi.org/10.18637/jss.v089.i01</a>.</p>
+<p>R Core Team (2018) R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a></p>
+<p>
+<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+Press for solution and discussion
+</button>
+</p>
+<div id="collapseExample" class="collapse">
+<h5 class="card-title">
+Cue counting of Montrave winter wrens
+</h5>
+<div class="card card-block card text-white bg-primary mb-3" style="max-width: 75rem;">
+<pre class="r"><code>library(Distance)
+data(wren_cuecount)
+head(wren_cuecount)</code></pre>
+<pre><code>##   Region.Label Area Sample.Label Cue.rate Cue.rate.SE object distance
+## 1     Montrave 33.2            1   1.4558      0.2428     38       50
+## 2     Montrave 33.2            1   1.4558      0.2428     39       55
+## 3     Montrave 33.2            1   1.4558      0.2428     40       55
+## 4     Montrave 33.2            1   1.4558      0.2428     41       55
+## 5     Montrave 33.2            1   1.4558      0.2428     46       50
+## 6     Montrave 33.2            1   1.4558      0.2428     47       50
+##   Study.Area Search.time
+## 1 montrave 3          10
+## 2 montrave 3          10
+## 3 montrave 3          10
+## 4 montrave 3          10
+## 5 montrave 3          10
+## 6 montrave 3          10</code></pre>
+<pre class="r"><code>hist(wren_cuecount$distance, xlab=&quot;Distance (m)&quot;, 
+     main=&quot;Winter wren song detection distances&quot;)</code></pre>
+<p><img src="cuecounts_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>conversion.factor &lt;- convert_units(&quot;meter&quot;, NULL, &quot;hectare&quot;)
+wren_cuecount$Effort &lt;- 10 # wren_cuecount$Search.time
+wrensong.hr &lt;- ds(wren_cuecount, transect=&quot;point&quot;, key=&quot;hr&quot;, adjustment=NULL,
+                  truncation=100)
+cutpoints &lt;- c(0,5,10,15,20,30,40,50,65,80,100)
+plot(wrensong.hr, breaks=cutpoints, pdf=TRUE)</code></pre>
+<p><img src="cuecounts_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<pre class="r"><code>cuerate &lt;- unique(wren_cuecount[ , c(&quot;Cue.rate&quot;,&quot;Cue.rate.SE&quot;)])
+names(cuerate) &lt;- c(&quot;rate&quot;, &quot;SE&quot;)
+(mult &lt;- list(creation=cuerate))</code></pre>
+<pre><code>## $creation
+##     rate     SE
+## 1 1.4558 0.2428</code></pre>
+<pre class="r"><code>wren.estimate &lt;- dht2(wrensong.hr, flatfile=wren_cuecount, strat_formula=~1,
+                      multipliers=mult, convert_units=conversion.factor)
+print(wren.estimate, report=&quot;density&quot;)</code></pre>
+<pre><code>## Summary statistics:
+##  .Label Area CoveredArea Effort   n  k    ER se.ER cv.ER
+##   Total 33.2     1005.31    320 771 32 2.409 0.236 0.098
+## 
+## Density estimates:
+##  .Label Estimate    se    cv    LCI    UCI      df
+##   Total   1.2018 0.238 0.198 0.8173 1.7674 520.656
+## 
+## Component percentages of variance:
+##  .Label Detection    ER Multipliers
+##   Total      4.82 24.38       70.79</code></pre>
+<pre class="r"><code>gof_ds(wrensong.hr)</code></pre>
+<p><img src="cuecounts_files/figure-html/unnamed-chunk-10-3.png" width="672" /></p>
+<pre><code>## 
+## Goodness of fit results for ddf object
+## 
+## Distance sampling Cramer-von Mises test (unweighted)
+## Test statistic = 1.69439 p-value = 6.24742e-05</code></pre>
+<h1 id="notes-regarding-the-cue-count-estimates-of-montrave-winter-wrens"><span class="header-section-number">7</span> Notes regarding the cue count estimates of Montrave winter wrens</h1>
+<p>This vignette uses the function <code>dht2</code> because that function knows how to incorporate multipliers such as cue rates and propogate the uncertainty in cue rate into overall uncertainty in density and abundance. Because there is uncertainty coming not only from encounter rate variability and uncertainty in detection function parameters, but also from cue rate variability, the relative contribution of each source of uncertainty is tablated. This is the last table produced by printing the <code>wren.estimate</code> object. For the Montrave winter wren data, only 4% of the uncertainty in the density estimate is attributable to the detection function, 24% attributable to encounter rate variability and 71% attributable to between-individual variability in call rate.</p>
+<p>This insight suggests that if this survey was to be repeated, exerting more effort in measuring between-individual variation in call rate would likely yield the most benefits in tightening the precision in density estimates.</p>
+Also note the poor fit of the model to the data; the P-value for the Cramer von-Mises test is &lt;&lt;0.05. This is caused by over-dispersion in the distribution of detected call distances. A single individual may sit on a tree branch and emit many song bursts, leading to a jagged distribution of call distances that is not well fitted by a smooth detection function. That over-dispersion will not bias the density estimates.
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Line transect density estimation</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Distance vignettes</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="line-transects.html">
+    <span class="fa fa-dove"></span>
+     
+    Line transects
+  </a>
+</li>
+<li>
+  <a href="variance.html">
+    <span class="fa fa-rocket"></span>
+     
+    Variance
+  </a>
+</li>
+<li>
+  <a href="point-transects.html">
+    <span class="fa fa-crow"></span>
+     
+    Point transects
+  </a>
+</li>
+<li>
+  <a href="covariates.html">
+    <span class="fa fa-kiwi-bird"></span>
+     
+    Covariates
+  </a>
+</li>
+<li>
+  <a href="strata.html">
+    <span class="fa fa-crow"></span>
+     
+    Stratification
+  </a>
+</li>
+<li>
+  <a href="cuecounts.html">
+    <span class="fa fa-headphones"></span>
+     
+    Cue counts
+  </a>
+</li>
+<li>
+  <a href="multipliers.html">
+    <span class="fa fa-poo"></span>
+     
+    Dung surveys
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Line transect density estimation</h1>
+
+</div>
+
+
+<p>In this exercise, we use <code>R</code> (R Core Team 2019) and the <code>Distance</code> package (Miller 2017, Miller <em>et al.</em> 2019) to fit different detection function models to line transect survey data of winter wren <em>(Troglodytes troglodytes)</em> density and abundance. These data were part of a study described by Buckland (2006).</p>
+<p>If you wish to see the code as part of this vignette, click “show all code” in the <strong>code</strong> button top right. Likewise, there is code provided in a solution at the bottom of the vignette (<strong>Solution discussion</strong>), to examine after you have made your own efforts.</p>
+<div id="objectives" class="section level1">
+<h1><span class="header-section-number">1</span> Objectives</h1>
+<ul>
+<li>Import a data file</li>
+<li>Fit a basic detection function using the <code>ds</code> function</li>
+<li>Plot and examine a detection function</li>
+<li>Fit different detection function forms.</li>
+</ul>
+</div>
+<div id="survey-design" class="section level1">
+<h1><span class="header-section-number">2</span> Survey design</h1>
+<p>Nineteen line transects were walked twice (Figure 1).</p>
+<div class="figure">
+<img src="images/montrave.jpg" alt="Montrave study area; diagonal lines indicate line transects walked to generate these data." />
+<p class="caption">Montrave study area; diagonal lines indicate line transects walked to generate these data.</p>
+</div>
+<p>The fields of the <code>wren_lt</code> data set are:</p>
+<ul>
+<li>Region.Label - identifier of regions: in this case there is only one region and set to ‘Montrave’ <strong>required field</strong></li>
+<li>Area - size of the study region (hectares): 33.2ha</li>
+<li>Sample.Label - line transect identifier (numbered 1-19) <strong>required field</strong></li>
+<li>Effort - length of the line transects (km) <strong>required field</strong></li>
+<li>object - unique identifier for each detected winter wren</li>
+<li>distance - perpendicular distance (metres) to each detection <strong>required field</strong></li>
+<li>Study.Area - this is the name of the study, ‘Montrave 4’</li>
+</ul>
+</div>
+<div id="make-the-data-available-for-r-session" class="section level1">
+<h1><span class="header-section-number">3</span> Make the data available for R session</h1>
+<p>This command assumes that the <code>Distance</code> package has been installed on your computer. The R workspace <code>wren_lt</code> contains detections of winter wrens from the line transect surveys of Buckland (2006).</p>
+<pre class="r"><code>library(Distance)
+data(wren_lt)</code></pre>
+<p>The effort, or transect length has been adjusted to recognise each transect is walked twice. Examine the first few rows of <code>wren_lt</code> using the function <code>head()</code></p>
+<pre class="r"><code>head(wren_lt)</code></pre>
+<p>The object <code>wren_lt</code> is a dataframe object made up of rows and columns.</p>
+<pre class="r"><code>sum(!is.na(wren_lt$distance))</code></pre>
+<p>The code above determines the number of detection distances that are not missing. Why might there be rows in our data where detection distance is missing? Distance would have to be recorded as missing for rows representing transects on which there were no detections. The transect and its effort would need to appear in the data, but without detections, the perpendicular distance would be recorded as missing (NA).</p>
+</div>
+<div id="examine-the-distribution-of-detection-distances" class="section level1">
+<h1><span class="header-section-number">4</span> Examine the distribution of detection distances</h1>
+<p>Gain familiarity with the perpendicular distance data using the <code>hist()</code> function</p>
+<pre class="r"><code>hist(wren_lt$distance, xlab=&quot;Distance (m)&quot;, main=&quot;Winter wren line transects&quot;)</code></pre>
+<p>Note that there appears to be too few detections between 0 and 20m, and too many detections between 20m and 40m. This may be evidence of evasive movement by winter wrens; see further discussion of this in the solution.</p>
+</div>
+<div id="specify-unit-conversions" class="section level1">
+<h1><span class="header-section-number">5</span> Specify unit conversions</h1>
+<blockquote>
+<p>A guaranteed way to produce incorrect results from your analysis is to misspecify the units distances are measured. The <code>ds</code> function has an argument <code>convert.units</code> where the user provides a value to report density in proper units. Providing an incorrect value will result in estimates that are out by orders of magnitude.</p>
+</blockquote>
+<p>We can choose the units in which winter wren density is to be reported, we choose <em>square kilometre</em>. How to transmit this information to the <code>ds</code> function?</p>
+<p>The answer is another function <code>convert_units</code>. Arguments to this function are</p>
+<ul>
+<li>distance_units
+<ul>
+<li>units of measure for perpendicular/radial distances</li>
+</ul></li>
+<li>effort_units
+<ul>
+<li>units of measure for effort (NULL for point transects)</li>
+</ul></li>
+<li>area_units
+<ul>
+<li>units of measure for the study area.</li>
+</ul></li>
+</ul>
+<p>Specify the correct arguments to this function for the winter wren data set. <em>Note</em>: units are specified as quoted strings, singular rather than plural; e.g. “meter” rather than “meters”</p>
+<pre class="r"><code>conversion.factor &lt;- convert_units(&quot;meter&quot;, &quot;kilometer&quot;, &quot;hectare&quot;)</code></pre>
+</div>
+<div id="fitting-a-simple-detection-function-model-with-ds" class="section level1">
+<h1><span class="header-section-number">6</span> Fitting a simple detection function model with <code>ds</code></h1>
+<p>Detection functions are fitted using the <code>ds</code> function and this function requires a data frame to have a column called <code>distance</code>. We have this in our <code>nests</code> data, therefore, we can simply supply the name of the data frame to the function along with additional arguments.</p>
+<p>Details about the arguments for this function:</p>
+<ul>
+<li><code>key="hn"</code>
+<ul>
+<li>fit a half-normal key detection function</li>
+</ul></li>
+<li><code>adjustment=NULL</code>
+<ul>
+<li>do not include adjustment terms</li>
+</ul></li>
+<li><code>convert.units=conversion.factor</code>
+<ul>
+<li>required because, for this example, the perpendicular distances are in metres and the line transect lengths are in kilometer - this argument converts the perpendicular distance measurements from metres to kilometer. Our density estimates will be reported in number of birds per hectare.</li>
+</ul></li>
+</ul>
+<pre class="r"><code>wren.hn &lt;- ds(data=wren_lt, key=&quot;hn&quot;, adjustment=NULL,
+              convert.units=conversion.factor)</code></pre>
+<p>On calling the <code>ds</code> function, information is provided to the screen reminding the user what model has been fitted and the associated AIC value. More information is supplied by applying the <code>summary()</code> function to the object created by <code>ds()</code>.</p>
+<pre class="r"><code>summary(wren.hn)</code></pre>
+<p>Visually inspect the fitted detection function with the <code>plot()</code> function, specifying the cutpoints histogram with argument <code>breaks</code>:</p>
+<pre class="r"><code>cutpoints &lt;- c(0,5,10,15,20,30,40,50,65,80,100)
+plot(wren.hn, breaks=cutpoints)</code></pre>
+<p>Continue to note the presence of evasive movement in this plot of the fit of detection function to the observed data.</p>
+</div>
+<div id="specifying-different-detection-functions" class="section level1">
+<h1><span class="header-section-number">7</span> Specifying different detection functions</h1>
+<p>Detection function forms and shapes, are specified by changing the <code>key</code> and <code>adjustment</code> arguments.</p>
+<p>The options available for <code>key</code> detection functions are:</p>
+<ul>
+<li>half normal (<code>key="hn"</code>) - default</li>
+<li>hazard rate (<code>key="hr"</code>)</li>
+<li>uniform (<code>key="unif"</code>)</li>
+</ul>
+<p>The options available for adjustment terms are:</p>
+<ul>
+<li>no adjustment terms (<code>adjustment=NULL</code>)</li>
+<li>cosine (<code>adjustment="cos"</code>) - default</li>
+<li>Hermite polynomial (<code>adjustment="herm"</code>)</li>
+<li>Simple polynomial (<code>adjustment="poly"</code>)</li>
+</ul>
+<p>To fit a uniform key function with cosine adjustment terms, use the command:</p>
+<pre class="r"><code>wren.unif.cos &lt;- ds(wren_lt, key=&quot;unif&quot;, adjustment=&quot;cos&quot;,
+                  convert.units=conversion.factor)</code></pre>
+<p>When this line of code is executed, multiple models will be fitted, succssively adding addition adjustment terms. When the model with four adjustment terms is fit, an error message is returned; but a uniform key with 3 cosine adjustments is fitted and contained in the returned object.</p>
+<p>AIC model selection will be used to fit adjustment terms of up to order 5.</p>
+<p>To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:</p>
+<pre class="r"><code>wren.hr.poly &lt;- ds(wren_lt, key=&quot;hr&quot;, adjustment=&quot;poly&quot;, 
+                  convert.units=conversion.factor)</code></pre>
+</div>
+<div id="model-comparison" class="section level1">
+<h1><span class="header-section-number">8</span> Model comparison</h1>
+<p>Each fitted detection function produces a different estimate of winter wren abundance and density. The estimate depends upon the model chosen. The model selection tool for distance sampling data is AIC.</p>
+<pre class="r"><code>AIC(wren.hn, wren.hr.poly, wren.unif.cos)</code></pre>
+<div id="absolute-goodness-of-fit" class="section level2">
+<h2><span class="header-section-number">8.1</span> Absolute goodness of fit</h2>
+<p>In addition to the relative ranking of models provided by AIC, it is also important to know whether selected model(s) actually fit the data. The model is the basis of inference, so it is dangerous to make inference from a model that does not fit the data. Goodness of fit is assessed using the function <code>gof_ds</code>. This function by default, reports the goodness of fit assessed by the Cramervon-Mises test along with a quantile-quantile plot showing locations of deviations from good fit. Optionally, a <span class="math inline">\(\chi^2\)</span> goodness of fit test and a bootstrap version of the Kolomogorov-Smirnov goodness of fit test can be performed.</p>
+<pre class="r"><code>gof_ds(wren.hr.poly)</code></pre>
+<p>Even though there may have been evasive movement, the goodness of fit statistics are still sufficient for using detection function models for inference.</p>
+</div>
+</div>
+<div id="model-comparison-tables" class="section level1">
+<h1><span class="header-section-number">9</span> Model comparison tables</h1>
+<p>The function <code>summarise_ds_models</code> combines the work of <code>AIC</code> and <code>gof_ds</code> to produce a table of fitted models and summary statistics.</p>
+<pre class="r"><code>summarize_ds_models(wren.hn, wren.hr.poly, wren.unif.cos,
+                    output=&quot;plain&quot;)</code></pre>
+</div>
+<div id="references" class="section level1">
+<h1><span class="header-section-number">10</span> References</h1>
+<p>Buckland ST (2006) Point transect surveys for songbirds: robust methodologies. The Auk 123:345–345. <a href="https://doi.org/10.1093/auk/123.2.345" class="uri">https://doi.org/10.1093/auk/123.2.345</a></p>
+<p>Miller DL (2017) Distance: Distance Sampling Detection Function and Abundance Estimation. R package version 0.9.7. <strong>should be 0.9.9 but not on CRAN</strong> <a href="https://CRAN.R-project.org/package=Distance" class="uri">https://CRAN.R-project.org/package=Distance</a></p>
+<p>Miller DL, Rexstad E, Thomas L, Marshall L, Laake JL (2019) Distance Sampling in R. Journal of Statistical Software 89(1), 1-28. <a href="doi:10.18637/jss.v089.i01" class="uri">doi:10.18637/jss.v089.i01</a> <a href="http://doi.org/10.18637/jss.v089.i01" class="uri">http://doi.org/10.18637/jss.v089.i01</a>.</p>
+<p>R Core Team (2018) R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a></p>
+<p>
+<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+Press for solution and discussion
+</button>
+</p>
+<div id="collapseExample" class="collapse">
+<h5 class="card-title">
+Montrave winter wren density
+</h5>
+<div class="card card-block card text-white bg-primary mb-3" style="max-width: 75rem;">
+<pre class="r"><code>library(Distance)
+data(wren_lt)
+head(wren_lt)</code></pre>
+<pre><code>##   Region.Label Area Sample.Label Effort object distance Study.Area
+## 1     Montrave 33.2            1  0.416      5       15 Montrave 4
+## 2     Montrave 33.2            1  0.416      6       80 Montrave 4
+## 3     Montrave 33.2            1  0.416      7       35 Montrave 4
+## 4     Montrave 33.2            1  0.416      8       55 Montrave 4
+## 5     Montrave 33.2            1  0.416     12       12 Montrave 4
+## 6     Montrave 33.2            1  0.416     13       75 Montrave 4</code></pre>
+<pre class="r"><code>nrow(wren_lt)</code></pre>
+<pre><code>## [1] 156</code></pre>
+<pre class="r"><code>hist(wren_lt$distance, xlab=&quot;Distance (m)&quot;, 
+     main=&quot;Winter wren line transects&quot;)</code></pre>
+<p><img src="line-transects_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre class="r"><code>conversion.factor &lt;- convert_units(&quot;meter&quot;, &quot;kilometer&quot;, &quot;hectare&quot;)
+wren.hn &lt;- ds(data=wren_lt, key=&quot;hn&quot;, adjustment=NULL,
+              convert.units=conversion.factor)
+summary(wren.hn)</code></pre>
+<pre><code>## 
+## Summary for distance analysis 
+## Number of observations :  156 
+## Distance range         :  0  -  100 
+## 
+## Model : Half-normal key function 
+## AIC   : 1418.188 
+## 
+## Detection function parameters
+## Scale coefficient(s):  
+##             estimate        se
+## (Intercept) 4.105816 0.1327744
+## 
+##                       Estimate          SE         CV
+## Average p             0.685037  0.05678866 0.08289868
+## N in covered region 227.724931 21.47288594 0.09429308
+## 
+## Summary statistics:
+##     Region Area CoveredArea Effort   n  k       ER    se.ER      cv.ER
+## 1 Montrave 33.2       193.2   9.66 156 19 16.14907 1.226096 0.07592366
+## 
+## Abundance:
+##   Label Estimate       se        cv      lcl      ucl       df
+## 1 Total 39.13286 4.399026 0.1124126 31.30227 48.92235 74.24692
+## 
+## Density:
+##   Label Estimate        se        cv       lcl      ucl       df
+## 1 Total   1.1787 0.1325008 0.1124126 0.9428394 1.473565 74.24692</code></pre>
+<pre class="r"><code>cutpoints &lt;- c(0,5,10,15,20,30,40,50,65,80,100)
+plot(wren.hn, breaks=cutpoints)</code></pre>
+<p><img src="line-transects_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<pre class="r"><code>wren.unif.cos &lt;- ds(wren_lt, key=&quot;unif&quot;, adjustment=&quot;cos&quot;,
+                  convert.units=conversion.factor)
+
+wren.hr.poly &lt;- ds(wren_lt, key=&quot;hr&quot;, adjustment=&quot;poly&quot;, 
+                  convert.units=conversion.factor)
+
+AIC(wren.hn, wren.hr.poly, wren.unif.cos)</code></pre>
+<pre><code>##               df      AIC
+## wren.hn        1 1418.188
+## wren.hr.poly   2 1412.133
+## wren.unif.cos  3 1416.433</code></pre>
+<pre class="r"><code>gof_ds(wren.hr.poly)</code></pre>
+<p><img src="line-transects_files/figure-html/unnamed-chunk-15-3.png" width="672" /></p>
+<pre><code>## 
+## Goodness of fit results for ddf object
+## 
+## Distance sampling Cramer-von Mises test (unweighted)
+## Test statistic = 0.251352 p-value = 0.186646</code></pre>
+<pre class="r"><code>summarize_ds_models(wren.hn, wren.hr.poly, wren.unif.cos,
+                    output=&quot;plain&quot;)</code></pre>
+<pre><code>##           Model                                        Key function Formula
+## 2  wren.hr.poly                                         Hazard-rate      ~1
+## 3 wren.unif.cos Uniform with cosine adjustment terms of order 1,2,3    &lt;NA&gt;
+## 1       wren.hn                                         Half-normal      ~1
+##   C-vM $p$-value Average detectability se(Average detectability) Delta AIC
+## 2     0.18664558             0.8445186                0.02445302  0.000000
+## 3     0.19992012             0.7566329                0.13932632  4.299942
+## 1     0.07693371             0.6850370                0.05678866  6.055028</code></pre>
+<h1 id="notes-regarding-the-montrave-winter-wren-data"><span class="header-section-number">10</span> Notes regarding the Montrave winter wren data</h1>
+<h2 id="the-summary-function"><span class="header-section-number">10</span> The <code>summary</code> function</h2>
+<p>Examining the output produced by <code>summary(wren.hn)</code> notice</p>
+<ul>
+<li>number of detections used in fitting</li>
+<li>truncation distances</li>
+<li>AIC score</li>
+<li>parameters of the detection function (on a natural log scale)</li>
+<li>estimated probability of detection within the truncation distance</li>
+<li>estimated number of objects in the area covered by survey effort</li>
+<li>summary of the survey (effort, number of transects, number of detections)
+<ul>
+<li>encounter rate and its variability</li>
+</ul></li>
+<li>estimated abundance and density within the study area
+<ul>
+<li>and measures of precision</li>
+</ul></li>
+<li>if there are strata, estimates are provided for each stratum</li>
+<li>if objects were detected in groups, there are estimates of abundance of groups and of individuals</li>
+</ul>
+<h2 id="model-selection-is-not-a-cookbook"><span class="header-section-number">10</span> Model selection is not a cookbook</h2>
+<p>The AIC model selection tools suggest the hazard rate key function is the preferred model. However, examine the shape of the hazard rate detection function in contrast to the uniform cosine fitted detection function.</p>
+<pre class="r"><code>par(mfrow=c(1,2))
+plot(wren.hr.poly, breaks=cutpoints, main=&quot;Hazard rate&quot;)
+plot(wren.unif.cos, breaks=cutpoints, main=&quot;Uniform cosine&quot;)</code></pre>
+<p><img src="line-transects_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre class="r"><code>par(mfrow=c(1,1))</code></pre>
+<p>The fellow who gathered these data (Prof Buckland) maintained the shape of the fitted hazard rate detection function is not plausible. Instead, he chose a different model for making inference (Buckland 2006:352):</p>
+<blockquote>
+<p>Common Chaffinch and Winter Wren showed some evidence of observer avoidance. For 2 of the 12 data sets, this resulted in a fitted hazard rate detection function with certain detection out to ∼60 m, with an implausibly rapid fall-off beyond 70 m. In these two analyses, a model with a slightly higher AIC value and a more plausible fit to the detection function was selected.</p>
+</blockquote>
+This is an example of moderating objective model selection tools with common sense and understanding of field procedures.
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

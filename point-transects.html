@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Point transect density estimation</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Distance vignettes</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li>
+  <a href="line-transects.html">
+    <span class="fa fa-dove"></span>
+     
+    Line transects
+  </a>
+</li>
+<li>
+  <a href="variance.html">
+    <span class="fa fa-rocket"></span>
+     
+    Variance
+  </a>
+</li>
+<li>
+  <a href="point-transects.html">
+    <span class="fa fa-crow"></span>
+     
+    Point transects
+  </a>
+</li>
+<li>
+  <a href="covariates.html">
+    <span class="fa fa-kiwi-bird"></span>
+     
+    Covariates
+  </a>
+</li>
+<li>
+  <a href="strata.html">
+    <span class="fa fa-crow"></span>
+     
+    Stratification
+  </a>
+</li>
+<li>
+  <a href="cuecounts.html">
+    <span class="fa fa-headphones"></span>
+     
+    Cue counts
+  </a>
+</li>
+<li>
+  <a href="multipliers.html">
+    <span class="fa fa-poo"></span>
+     
+    Dung surveys
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Point transect density estimation</h1>
+
+</div>
+
+
+<p>In this exercise, we use <code>R</code> (R Core Team 2019) and the <code>Distance</code> package (Miller 2017, Miller <em>et al.</em> 2019) to fit different detection function models to point transect survey data of savanna sparrows <em>(Passerculus sandwichensis)</em> density and abundance. These data were part of a study examining the effect of livestock grazing upon vegetation structure and consequently upon the avian community described by Knopf et al. (1988).</p>
+<p>If you wish to see the code as part of this vignette, click “show all code” in the <strong>code</strong> button top right. Likewise, there is code provided in a solution at the bottom of the vignette (<strong>Solution discussion</strong>), to examine after you have made your own efforts.</p>
+<p>Steps in this analysis are similar to the steps taken in the line transect analysis of winter wren data.</p>
+<div id="objectives" class="section level1">
+<h1><span class="header-section-number">1</span> Objectives</h1>
+<ul>
+<li>Import a data file</li>
+<li>Fit a basic detection function using the <code>ds</code> function</li>
+<li>Plot and examine a detection function</li>
+<li>Fit different detection function forms.</li>
+</ul>
+</div>
+<div id="survey-design" class="section level1">
+<h1><span class="header-section-number">2</span> Survey design</h1>
+<p>A total of 373 point transects were placed in three pastures in the Arapaho National Wildlife Refuge in Colorado. Elevation of these pastures was ~2500m. We will not deal with pasture-level analysis of these data in this vignette and will alter the data to remove the strata designations.</p>
+<div class="figure">
+<img src="images/arapaho.jpg" alt="Summer grazed pastures along Illinois River Arapaho National Wildlife Refuge, Colorado. Figure from Knopf et al. (1988)." />
+<p class="caption">Summer grazed pastures along Illinois River Arapaho National Wildlife Refuge, Colorado. Figure from Knopf et al. (1988).</p>
+</div>
+<p>The fields of the <code>Savannah_sparrow_1980</code> data set are:</p>
+<ul>
+<li>Region.Label - three pastures that constituted sections of the study area. However, for this vignette we are going to make all labels identical. This will treat the data as if they were all detected in the same pasture. The matter of stratification will be taken up in another vignette.</li>
+<li>Area - size of the study region. A place holder, because pasture sizes are not known. Estimates of density and abundance will be equivalent.</li>
+<li>Sample.Label - point transect identifier (total of 273)</li>
+<li>Effort - number of visits to each point</li>
+<li>object - unique identifier for each detected savanna sparrow</li>
+<li>distance - radial distance (metres) to each detection</li>
+<li>Study.Area - only data for savanna sparrow (SASP) are included in this data set</li>
+</ul>
+</div>
+<div id="make-the-data-available-for-r-session" class="section level1">
+<h1><span class="header-section-number">3</span> Make the data available for R session</h1>
+<p>This command assumes that the <code>dsdata</code> package has been installed on your computer. The R workspace <code>Savannah_sparrow_1980</code> contains detections of savanna sparrows from point transect surveys of Knopf et al. (1988).</p>
+<pre class="r"><code>library(Distance)
+data(Savannah_sparrow_1980)
+#  remove pasture-level identifier in Region.Label
+Savannah_sparrow_1980$Region.Label &lt;- &quot;Single_stratum&quot;</code></pre>
+<p>The code above overwrites the strata designations in the original data to make it appear that all data were derived from a single stratum. This makes the analysis simpler to perform. There are examples of analysis of stratified data in another vignette labelled <strong>Stratification</strong>.</p>
+<p>Examine the first few rows of <code>Savannah_sparrow_1980</code> using the function <code>head()</code></p>
+<pre class="r"><code>head(Savannah_sparrow_1980)</code></pre>
+<p>The object <code>Savannah_sparrow_1980</code> is a dataframe object made up of rows and columns. In contrast to the Montrave winter wren line transect data used in the previous vignette, savanna sparrows were not detected at all point transects. Radial distances receive the value <code>NA</code> for transects where there were no detections. To determine the number of detections in this data set, we total the number of values in the <code>distance</code> field that are not <code>NA</code></p>
+<pre class="r"><code>sum(!is.na(Savannah_sparrow_1980$distance))</code></pre>
+</div>
+<div id="examine-the-distribution-of-detection-distances" class="section level1">
+<h1><span class="header-section-number">4</span> Examine the distribution of detection distances</h1>
+<p>Gain familiarity with the radial distance data using the <code>hist()</code> function</p>
+<pre class="r"><code>hist(Savannah_sparrow_1980$distance, xlab=&quot;Distance (m)&quot;, 
+     main=&quot;Savannah sparrow point transects&quot;)</code></pre>
+<p>Note the shape of the radial distance histogram does not resemble the shape of perpendicular distances gathered from line transect sampling (Section 1.3 of Buckland et al. 2015).</p>
+</div>
+<div id="specify-unit-conversions" class="section level1">
+<h1><span class="header-section-number">5</span> Specify unit conversions</h1>
+<p>With point transects, there are only units of measure associated with the size of the study area and the radial distance measures, because effort is measured in number of visits, rather than distance.</p>
+<ul>
+<li>distance_units
+<ul>
+<li>units of measure for radial distances</li>
+</ul></li>
+<li>effort_units
+<ul>
+<li>units of measure for effort (NULL for point transects)</li>
+</ul></li>
+<li>area_units
+<ul>
+<li>units of measure for the study area. Recall this data set has set the size of the study area to be <code>1</code>, resulting in abundance and density to be equal.</li>
+</ul></li>
+</ul>
+<pre class="r"><code>conversion.factor &lt;- convert_units(&quot;meter&quot;, NULL, &quot;hectare&quot;)</code></pre>
+</div>
+<div id="fitting-a-simple-detection-function-model-with-ds" class="section level1">
+<h1><span class="header-section-number">6</span> Fitting a simple detection function model with <code>ds</code></h1>
+<p>Detection functions are fitted using the <code>ds</code> function and this function requires a data frame to have a column called <code>distance</code>. We have this in our <code>nests</code> data, therefore, we can simply supply the name of the data frame to the function along with additional arguments.</p>
+<p>Details about the arguments for this function:</p>
+<ul>
+<li><code>key="hn"</code>
+<ul>
+<li>fit a half-normal key detection function</li>
+</ul></li>
+<li><code>adjustment=NULL</code>
+<ul>
+<li>do not include adjustment terms</li>
+</ul></li>
+<li><code>transect="point"</code>
+<ul>
+<li>necessary to indicate this is point transect data</li>
+</ul></li>
+<li><code>convert.units=conversion.factor</code>
+<ul>
+<li>required because, for this example, the radial distances are in metres . Our density estimates will be reported in number of birds per hectare.</li>
+</ul></li>
+<li><code>truncation="5%"</code>
+<ul>
+<li>right truncation (described below)</li>
+</ul></li>
+</ul>
+<p>As is customary, right truncation is employed to remove 5% of the observations most distant from the transects, as detections at these distances contain little information about the shape of the fitted probability density function near the point.</p>
+<pre class="r"><code>sasp.hn &lt;- ds(data=Savannah_sparrow_1980, key=&quot;hn&quot;, adjustment=NULL,
+              transect=&quot;point&quot;, convert.units=conversion.factor, truncation=&quot;5%&quot;)</code></pre>
+<p>On calling the <code>ds</code> function, information is provided to the screen reminding the user what model has been fitted and the associated AIC value. More information is supplied by applying the <code>summary()</code> function to the object created by <code>ds()</code>.</p>
+<pre class="r"><code>summary(sasp.hn)</code></pre>
+<p>Visually inspect the fitted detection function with the <code>plot()</code> function, specifying the cutpoints histogram with argument <code>breaks</code>. Add the argument <code>pdf</code> so the plot shows the probability densiy function rather than the detection function. The probability density function is preferred for assessing model fit because the PDF incorporates information about the availability of animals to be detected. There are few animals available to be detected at small distances, therefore lack of fit at small distances is not as consequential for points as it is for lines.</p>
+<pre class="r"><code>cutpoints &lt;- c(0,5,10,15,20,30,40,max(Savannah_sparrow_1980$distance, na.rm=TRUE))
+plot(sasp.hn, breaks=cutpoints, pdf=TRUE)</code></pre>
+</div>
+<div id="specifying-different-detection-functions" class="section level1">
+<h1><span class="header-section-number">7</span> Specifying different detection functions</h1>
+<p>Detection function forms and shapes, are specified by changing the <code>key</code> and <code>adjustment</code> arguments.</p>
+<p>The options available for <code>key</code> and <code>adjustment</code> elements detection functions are:</p>
+<ul>
+<li>half normal (<code>key="hn"</code>) - default</li>
+<li>hazard rate (<code>key="hr"</code>)</li>
+<li>uniform (<code>key="unif"</code>)</li>
+<li>no adjustment terms (<code>adjustment=NULL</code>)</li>
+<li>cosine (<code>adjustment="cos"</code>) - default</li>
+<li>Hermite polynomial (<code>adjustment="herm"</code>)</li>
+<li>Simple polynomial (<code>adjustment="poly"</code>)</li>
+</ul>
+<p>To fit a uniform key function with cosine adjustment terms, use the command:</p>
+<pre class="r"><code>sasp.unif.cos &lt;- ds(Savannah_sparrow_1980, key=&quot;unif&quot;, adjustment=&quot;cos&quot;,
+                    transect=&quot;point&quot;, convert.units=conversion.factor, truncation=&quot;5%&quot;)</code></pre>
+<p>To fit a hazard rate key function with simple polynomial adjustment terms, then use the command:</p>
+<pre class="r"><code>sasp.hr.poly &lt;- ds(Savannah_sparrow_1980, key=&quot;hr&quot;, adjustment=&quot;poly&quot;, 
+                   transect=&quot;point&quot;, convert.units=conversion.factor, truncation=&quot;5%&quot;)</code></pre>
+</div>
+<div id="model-comparison" class="section level1">
+<h1><span class="header-section-number">8</span> Model comparison</h1>
+<p>Each fitted detection function produces a different estimate of Savannah sparrow abundance and density. The estimate depends upon the model chosen. The model selection tool for distance sampling data is AIC.</p>
+<pre class="r"><code>AIC(sasp.hn, sasp.hr.poly, sasp.unif.cos)</code></pre>
+<div id="absolute-goodness-of-fit" class="section level2">
+<h2><span class="header-section-number">8.1</span> Absolute goodness of fit</h2>
+<p>In addition to the relative ranking of models provided by AIC, it is also important to know whether selected model(s) actually fit the data. The model is the basis of inference, so it is dangerous to make inference from a model that does not fit the data. Goodness of fit is assessed using the function <code>gof_ds</code>.</p>
+<pre class="r"><code>gof_ds(sasp.hn)</code></pre>
+</div>
+</div>
+<div id="model-comparison-tables" class="section level1">
+<h1><span class="header-section-number">9</span> Model comparison tables</h1>
+<p>The function <code>summarise_ds_models</code> combines the work of <code>AIC</code> and <code>gof_ds</code> to produce a table of fitted models and summary statistics.</p>
+<pre class="r"><code>summarize_ds_models(sasp.hn, sasp.hr.poly, sasp.unif.cos,
+                    output=&quot;plain&quot;)</code></pre>
+</div>
+<div id="references" class="section level1">
+<h1><span class="header-section-number">10</span> References</h1>
+<p>Buckland, ST, EA Rexstad, TA Marques, and CS Oedekoven. (2015) Distance Sampling: Methods and Applications. Springer International Publishing, Cham.</p>
+<p>Knopf, FL, JA Sedgwick, and RW Cannon. (1988) Guild structure of a riparian avifauna relative to seasonal cattle grazing. The Journal of Wildlife Management 52(2): 280–290. <a href="https://doi.org/10.2307/3801235" class="uri">https://doi.org/10.2307/3801235</a>.</p>
+<p>Miller DL (2017) Distance: Distance Sampling Detection Function and Abundance Estimation. R package version 0.9.7. <strong>should be 0.9.9 but not on CRAN</strong> <a href="https://CRAN.R-project.org/package=Distance" class="uri">https://CRAN.R-project.org/package=Distance</a></p>
+<p>Miller DL, Rexstad E, Thomas L, Marshall L, Laake JL (2019) Distance Sampling in R. Journal of Statistical Software 89(1), 1-28. <a href="doi:10.18637/jss.v089.i01" class="uri">doi:10.18637/jss.v089.i01</a> <a href="http://doi.org/10.18637/jss.v089.i01" class="uri">http://doi.org/10.18637/jss.v089.i01</a>.</p>
+<p>R Core Team (2018) R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a></p>
+<p>
+<button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+Press for solution and discussion
+</button>
+</p>
+<div class="collapse" id="collapseExample">
+<h5 class="card-title">
+Arapaho National Wildlife Refuge Savannah sparrow density
+</h5>
+<div class="card card-block card text-white bg-primary mb-3" style="max-width: 75rem;">
+<pre class="r"><code>library(Distance)
+data(Savannah_sparrow_1980)
+#  remove pasture-level identifier in Region.Label
+Savannah_sparrow_1980$Region.Label &lt;- &quot;Single_stratum&quot;
+head(Savannah_sparrow_1980)</code></pre>
+<pre><code>##     Region.Label Area Sample.Label Effort object distance Study.Area
+## 1 Single_stratum    1    POINT   1      1     NA       NA  SASP 1980
+## 2 Single_stratum    1    POINT   2      1     NA       NA  SASP 1980
+## 3 Single_stratum    1    POINT   3      1     NA       NA  SASP 1980
+## 4 Single_stratum    1    POINT   4      1     NA       NA  SASP 1980
+## 5 Single_stratum    1    POINT   5      1     NA       NA  SASP 1980
+## 6 Single_stratum    1    POINT   6      1     NA       NA  SASP 1980</code></pre>
+<pre class="r"><code>sum(!is.na(Savannah_sparrow_1980$distance))</code></pre>
+<pre><code>## [1] 276</code></pre>
+<pre class="r"><code>hist(Savannah_sparrow_1980$distance, xlab=&quot;Distance (m)&quot;, main=&quot;Savannah sparrow point transects&quot;)</code></pre>
+<p><img src="point-transects_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre class="r"><code>conversion.factor &lt;- convert_units(&quot;meter&quot;, NULL, &quot;hectare&quot;)
+sasp.hn &lt;- ds(data=Savannah_sparrow_1980, key=&quot;hn&quot;, adjustment=NULL,
+              transect=&quot;point&quot;, convert.units=conversion.factor, truncation=&quot;5%&quot;)
+summary(sasp.hn)</code></pre>
+<pre><code>## 
+## Summary for distance analysis 
+## Number of observations :  262 
+## Distance range         :  0  -  51.025 
+## 
+## Model : Half-normal key function 
+## AIC   : 2021.776 
+## 
+## Detection function parameters
+## Scale coefficient(s):  
+##             estimate         se
+## (Intercept) 3.044624 0.04270318
+## 
+##                       Estimate          SE         CV
+## Average p             0.321125  0.02296184 0.07150438
+## N in covered region 815.881752 71.61193757 0.08777245
+## 
+## Summary statistics:
+##           Region Area CoveredArea Effort   n   k        ER      se.ER
+## 1 Single_stratum    1    305.0877    373 262 373 0.7024129 0.04726421
+##        cv.ER
+## 1 0.06728836
+## 
+## Abundance:
+##   Label Estimate        se         cv      lcl      ucl       df
+## 1 Total 2.674253 0.2625757 0.09818656 2.206264 3.241512 598.5882
+## 
+## Density:
+##   Label Estimate        se         cv      lcl      ucl       df
+## 1 Total 2.674253 0.2625757 0.09818656 2.206264 3.241512 598.5882</code></pre>
+<pre class="r"><code>cutpoints &lt;- c(0,5,10,15,20,30,40,max(Savannah_sparrow_1980$distance, na.rm=TRUE))
+plot(sasp.hn, breaks=cutpoints, pdf=TRUE)</code></pre>
+<p><img src="point-transects_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<pre class="r"><code>sasp.unif.cos &lt;- ds(Savannah_sparrow_1980, key=&quot;unif&quot;, adjustment=&quot;cos&quot;,
+                    transect=&quot;point&quot;, convert.units=conversion.factor, truncation=&quot;5%&quot;)
+sasp.hr.poly &lt;- ds(Savannah_sparrow_1980, key=&quot;hr&quot;, adjustment=&quot;poly&quot;, 
+                   transect=&quot;point&quot;, convert.units=conversion.factor, truncation=&quot;5%&quot;)
+AIC(sasp.hn, sasp.hr.poly, sasp.unif.cos)</code></pre>
+<pre><code>##               df      AIC
+## sasp.hn        1 2021.776
+## sasp.hr.poly   3 2024.578
+## sasp.unif.cos  1 2023.178</code></pre>
+<pre class="r"><code>gof_ds(sasp.hn)</code></pre>
+<p><img src="point-transects_files/figure-html/unnamed-chunk-15-3.png" width="672" /></p>
+<pre><code>## 
+## Goodness of fit results for ddf object
+## 
+## Distance sampling Cramer-von Mises test (unweighted)
+## Test statistic = 0.0835959 p-value = 0.671325</code></pre>
+<pre class="r"><code>summarize_ds_models(sasp.hn, sasp.hr.poly, sasp.unif.cos,
+                    output=&quot;plain&quot;)</code></pre>
+<pre><code>##           Model                                                  Key function
+## 1       sasp.hn                                                   Half-normal
+## 3 sasp.unif.cos                Uniform with cosine adjustment term of order 1
+## 2  sasp.hr.poly Hazard-rate with simple polynomial adjustment term of order 2
+##   Formula C-vM $p$-value Average detectability se(Average detectability)
+## 1      ~1      0.6713253             0.3211250                0.02296184
+## 3    &lt;NA&gt;      0.3636704             0.3495259                0.01456493
+## 2      ~1      0.9178066             0.2830338                0.05939264
+##   Delta AIC
+## 1  0.000000
+## 3  1.402102
+## 2  2.801674</code></pre>
+<h1 id="notes-regarding-the-savannah-sparrow-point-transect-data"><span class="header-section-number">10</span> Notes regarding the Savannah sparrow point transect data</h1>
+<p>Key differences between analysis of line transect data and point transect data</p>
+<ul>
+<li><p>argument <code>transect</code> in <code>ds()</code> must be set to <code>"point"</code>,</p></li>
+<li><p>histogram of radial detection distances is characteristically “humped” because few individuals are available to be detected near the points,</p></li>
+<li><p>because of the hump shape, plotting to assess fit of data to detection distribution usually assessed via <code>pdf=TRUE</code> argument added to <code>plot()</code> function</p></li>
+<li><p>for the Arapaho National Refuge Savannah sparrow data, the three candidate models all provide adequeate fit to the data and produce comparable estimates of <span class="math inline">\(P_a\)</span>.</p>
+</div></li>
+</ul>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
